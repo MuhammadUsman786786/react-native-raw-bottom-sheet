@@ -7,9 +7,13 @@ import {
   TouchableOpacity,
   Animated,
   PanResponder,
-  Platform
+  Platform,
+  Dimensions
 } from "react-native";
 import styles from "./style";
+
+const {height}=Dimensions.get('window');
+const MAX_SHEET_HEIGHT=height*0.8;
 
 const SUPPORTED_ORIENTATIONS = [
   "portrait",
@@ -37,9 +41,10 @@ class RBSheet extends Component {
     if (visible) {
       this.setState({ modalVisible: visible });
       if (typeof onOpen === "function") onOpen(props);
+      const calculatedHeight=props?.height ?? height
       Animated.timing(animatedHeight, {
         useNativeDriver: false,
-        toValue: height,
+        toValue: calculatedHeight<MAX_SHEET_HEIGHT?calculatedHeight:MAX_SHEET_HEIGHT,
         duration: openDuration
       }).start();
     } else {
